@@ -9,9 +9,9 @@
 |------|------------|
 | **Nama** | Rizki Amalia Rasyid Ridha |
 | **NIM** | 105841121223 |
-| **Kelas** | 5B |
+| **Kelas** | 5 B |
 | **Tanggal** | 2026-02-24 |
-
+| **Mata Kuliah** | DEVOPS AND CI/CD PIPELINES |
 ---
 
 ## 📚 Pemahaman Docker
@@ -251,6 +251,7 @@ Solusi: Saya menggunakan perintah docker logs [nama_container] untuk melakukan t
 ---
 
 *Laporan ini dibuat pada Rabu, 25 Februari 2026*
+
 
 
 
