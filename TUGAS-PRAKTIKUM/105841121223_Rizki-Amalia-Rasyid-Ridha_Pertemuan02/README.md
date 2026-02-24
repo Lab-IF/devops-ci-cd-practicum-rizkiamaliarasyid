@@ -208,16 +208,16 @@ time="2026-02-25T01:18:04+08:00" level=warning msg="D:\\TUGAS-PRAKTIKUM\\1058411
 |----|------------|------------|
 | 1 | ![Container Running](screenshots/01-container-running.png) | Container yang sedang berjalan |
 | 2 | ![Nginx Browser](screenshots/02-nginx-browser.png) | Nginx berhasil berjalan di web server |
-| 3 | ![Docker Logs](screenshots/022%20docker%20logs.png) | Output dari command docker logs |
+| 3 | ![Docker Logs](screenshots/022-docker-logs.png) | Output dari command docker logs |
 | 4 | ![Docker Build](screenshots/03-docker-build.png) | Proses build Docker image |
 | 5 | ![Dockerfile](screenshots/033-dockerfile.png) | Isi dari file Dockerfile |
 | 6 | ![Docker Images](screenshots/04-docker-image.png) | Daftar Docker images yang tersedia |
-| 7 | ![Browser Deployment](screenshots/044-browser%20hasil%20deployment.png) | Tampilan browser hasil deployment custom image |
-| 8 | ![Compose Ps](screenshots/05%20compose%20ps.png) | Status service (Docker Compose ps) |
+| 7 | ![Browser Deployment](screenshots/044-browserhasildeployment.png) | Tampilan browser hasil deployment custom image |
+| 8 | ![Compose Ps](screenshots/05-compose-ps.png) | Status service (Docker Compose ps) |
 | 9 | ![Compose Up](screenshots/051-docker-compose-up.png) | Proses menjalankan Docker Compose up |
 | 10 | ![Compose Logs](screenshots/055-docker-compose-logs.png) | Output log dari Docker Compose |
-| 11 | ![Compose Services 1](screenshots/06%20compose%20services1.png) | Aplikasi/services berjalan di browser (Tab 1) |
-| 12 | ![Compose Services 2](screenshots/06%20compose%20services2.png) | Aplikasi/services berjalan di browser (Tab 2) |
+| 11 | ![Compose Services 1](screenshots/06-compose-services1.png) | Aplikasi/services berjalan di browser port 8080(Tab 1) |
+| 12 | ![Compose Services 2](screenshots/06-compose-services2.png) | Aplikasi/services berjalan di browser port 8081(Tab 2) |
 
 ---
 
@@ -251,5 +251,6 @@ Solusi: Saya menggunakan perintah docker logs [nama_container] untuk melakukan t
 ---
 
 *Laporan ini dibuat pada Rabu, 25 Februari 2026*
+
 
 
