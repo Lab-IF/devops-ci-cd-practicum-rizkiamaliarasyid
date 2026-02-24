@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Praktikum - Pertemuan 04: Code Review & Pull Request</title>
+    <style>
+        :root {
+            --primary: #8b5cf6;
+            --primary-dark: #7c3aed;
+            --secondary: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --border: #e2e8f0;
+            --text: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border-radius: 16px;
+        }
+
+        .header h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+        .header p { opacity: 0.9; }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid var(--border);
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group { margin-bottom: 1.25rem; }
+
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .required::after { content: " *"; color: var(--danger); }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="date"],
+        input[type="url"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        }
+
+        textarea { min-height: 120px; resize: vertical; }
+
+        .hint { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem; }
+
+        .code-input {
+            font-family: 'Courier New', monospace;
+            background: #1e293b;
+            color: #e2e8f0;
+        }
+
+        .screenshot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .screenshot-item {
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .screenshot-item:hover {
+            border-color: var(--primary);
+            background: rgba(139, 92, 246, 0.05);
+        }
+
+        .screenshot-item input[type="file"] { display: none; }
+
+        .screenshot-item label {
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .screenshot-item .icon { font-size: 2rem; }
+        .screenshot-item .name { font-weight: 500; color: var(--text); }
+        .screenshot-item .desc { font-size: 0.8rem; color: var(--text-muted); }
+
+        .screenshot-preview {
+            max-width: 100%;
+            max-height: 150px;
+            border-radius: 4px;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .checklist { list-style: none; }
+
+        .checklist li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .checklist input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-success { background: var(--success); color: white; }
+        .btn-secondary { background: var(--secondary); color: white; }
+
+        .btn-group { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem; }
+
+        .output-section { display: none; margin-top: 2rem; }
+        .output-section.visible { display: block; }
+
+        #markdownOutput {
+            width: 100%;
+            min-height: 400px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background: #1e293b;
+            color: #e2e8f0;
+        }
+
+        .copy-btn { position: relative; }
+
+        .copy-btn.copied::after {
+            content: "Copied!";
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--success);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 1rem; }
+            .header { padding: 1.5rem; }
+            .header h1 { font-size: 1.4rem; }
+            .btn-group { flex-direction: column; }
+            .btn { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>👀 Laporan Praktikum</h1>
+            <p>Pertemuan 04: Code Review & Pull Request</p>
+            <span class="badge">⭐⭐ Tingkat: Dasar-Menengah</span>
+        </div>
+
+        <form id="reportForm">
+            <!-- Identitas Mahasiswa -->
+            <div class="card">
+                <h2 class="card-title">👤 Identitas Mahasiswa</h2>
+                
+                <div class="form-group">
+                    <label class="required" for="nama">Nama Lengkap</label>
+                    <input type="text" id="nama" name="nama" placeholder="Masukkan nama lengkap" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="required" for="nim">NIM</label>
+                    <input type="text" id="nim" name="nim" placeholder="Contoh: 105841111121" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="required" for="kelas">Kelas</label>
+                    <select id="kelas" name="kelas" required>
+                        <option value="">-- Pilih Kelas --</option>
+                        <option value="5A">5A</option>
+                        <option value="5B">5B</option>
+                        <option value="5C">5C</option>
+                        <option value="5D">5D</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="tanggal">Tanggal Pengerjaan</label>
+                    <input type="date" id="tanggal" name="tanggal">
+                </div>
+            </div>
+
+            <!-- Pemahaman Code Review -->
+            <div class="card">
+                <h2 class="card-title">📚 Pemahaman Code Review</h2>
+                
+                <div class="form-group">
+                    <label class="required" for="pengertianCR">Jelaskan apa itu Code Review dan mengapa penting dalam tim development</label>
+                    <textarea id="pengertianCR" name="pengertianCR" 
+                        placeholder="Jelaskan pemahaman Anda tentang Code Review..." required></textarea>
+                    <p class="hint">Sertakan manfaat dan tujuan code review.</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="required" for="bestPracticesCR">Sebutkan minimal 5 best practices dalam melakukan Code Review</label>
+                    <textarea id="bestPracticesCR" name="bestPracticesCR" 
+                        placeholder="1. Review code secara berkala, jangan menumpuk
+2. Fokus pada logic dan arsitektur, bukan style
+3. ..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="whatToReview">Hal-hal apa saja yang harus diperhatikan saat review code?</label>
+                    <textarea id="whatToReview" name="whatToReview" 
+                        placeholder="- Kebenaran logic
+- Code readability
+- Security vulnerabilities
+- ..."></textarea>
+                </div>
+            </div>
+
+            <!-- Pull Request -->
+            <div class="card">
+                <h2 class="card-title">📬 Pull Request</h2>
+                
+                <div class="form-group">
+                    <label class="required" for="prUrl">URL Pull Request yang dibuat</label>
+                    <input type="url" id="prUrl" name="prUrl" placeholder="https://github.com/username/repo/pull/1" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="required" for="prTitle">Judul Pull Request</label>
+                    <input type="text" id="prTitle" name="prTitle" placeholder="feat: Add user authentication feature" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="required" for="prDescription">Deskripsi Pull Request (template yang digunakan)</label>
+                    <textarea id="prDescription" name="prDescription" class="code-input" style="min-height: 200px;"
+                        placeholder="## Description
+Briefly describe the changes made.
+
+## Type of Change
+- [ ] Bug fix
+- [ ] New feature
+- [ ] Breaking change
+
+## How Has This Been Tested?
+Describe the tests you ran.
+
+## Checklist
+- [ ] My code follows the style guidelines
+- [ ] I have performed a self-review" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="prLabels">Labels yang digunakan pada PR</label>
+                    <input type="text" id="prLabels" name="prLabels" placeholder="enhancement, documentation, bug">
+                </div>
+            </div>
+
+            <!-- Branch Protection -->
+            <div class="card">
+                <h2 class="card-title">🛡️ Branch Protection Rules</h2>
+                
+                <div class="form-group">
+                    <label class="required" for="branchProtectionConfig">Konfigurasi Branch Protection yang diterapkan</label>
+                    <textarea id="branchProtectionConfig" name="branchProtectionConfig" 
+                        placeholder="✅ Require pull request reviews before merging
+  - Required approving reviews: 1
+✅ Require status checks to pass before merging
+✅ Require branches to be up to date before merging
+❌ Include administrators" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="whyProtection">Mengapa Branch Protection penting untuk main/production branch?</label>
+                    <textarea id="whyProtection" name="whyProtection" 
+                        placeholder="Jelaskan alasan pentingnya branch protection..."></textarea>
+                </div>
+            </div>
+
+            <!-- Review Experience -->
+            <div class="card">
+                <h2 class="card-title">👥 Pengalaman Review</h2>
+                
+                <div class="form-group">
+                    <label class="required" for="reviewGiven">Contoh review/feedback yang Anda berikan ke rekan (jika ada)</label>
+                    <textarea id="reviewGiven" name="reviewGiven" 
+                        placeholder="File: src/auth.py
+Line: 42
+Comment: Consider using constants for magic numbers. Instead of 'if attempts > 3:', use 'if attempts > MAX_LOGIN_ATTEMPTS:'" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="reviewReceived">Feedback yang Anda terima dari reviewer</label>
+                    <textarea id="reviewReceived" name="reviewReceived" 
+                        placeholder="Tuliskan feedback yang Anda terima dan bagaimana Anda meresponnya..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="reviewImprovement">Perubahan yang Anda lakukan setelah mendapat feedback</label>
+                    <textarea id="reviewImprovement" name="reviewImprovement" 
+                        placeholder="Sebelum:
+...
+Sesudah:
+..."></textarea>
+                </div>
+            </div>
+
+            <!-- Screenshots -->
+            <div class="card">
+                <h2 class="card-title">📸 Screenshots Bukti</h2>
+                <p class="hint" style="margin-bottom: 1rem;">Upload screenshot sebagai bukti pengerjaan. File akan disimpan di folder <code>screenshots/</code></p>
+                
+                <div class="screenshot-grid">
+                    <div class="screenshot-item">
+                        <label for="ss1">
+                            <span class="icon">📷</span>
+                            <span class="name">01-pr-form.png</span>
+                            <span class="desc">Form pembuatan PR</span>
+                            <input type="file" id="ss1" accept="image/*" onchange="previewImage(this, 'preview1')">
+                            <img id="preview1" class="screenshot-preview" alt="Preview">
+                        </label>
+                    </div>
+
+                    <div class="screenshot-item">
+                        <label for="ss2">
+                            <span class="icon">📷</span>
+                            <span class="name">02-pr-conversation.png</span>
+                            <span class="desc">Diskusi di PR</span>
+                            <input type="file" id="ss2" accept="image/*" onchange="previewImage(this, 'preview2')">
+                            <img id="preview2" class="screenshot-preview" alt="Preview">
+                        </label>
+                    </div>
+
+                    <div class="screenshot-item">
+                        <label for="ss3">
+                            <span class="icon">📷</span>
+                            <span class="name">03-review-comment.png</span>
+                            <span class="desc">Review comment pada code</span>
+                            <input type="file" id="ss3" accept="image/*" onchange="previewImage(this, 'preview3')">
+                            <img id="preview3" class="screenshot-preview" alt="Preview">
+                        </label>
+                    </div>
+
+                    <div class="screenshot-item">
+                        <label for="ss4">
+                            <span class="icon">📷</span>
+                            <span class="name">04-branch-protection.png</span>
+                            <span class="desc">Branch protection settings</span>
+                            <input type="file" id="ss4" accept="image/*" onchange="previewImage(this, 'preview4')">
+                            <img id="preview4" class="screenshot-preview" alt="Preview">
+                        </label>
+                    </div>
+
+                    <div class="screenshot-item">
+                        <label for="ss5">
+                            <span class="icon">📷</span>
+                            <span class="name">05-pr-merged.png</span>
+                            <span class="desc">PR yang sudah merged</span>
+                            <input type="file" id="ss5" accept="image/*" onchange="previewImage(this, 'preview5')">
+                            <img id="preview5" class="screenshot-preview" alt="Preview">
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Refleksi -->
+            <div class="card">
+                <h2 class="card-title">💭 Refleksi & Kesimpulan</h2>
+                
+                <div class="form-group">
+                    <label class="required" for="pelajaran">Apa yang Anda pelajari dari praktikum Code Review ini?</label>
+                    <textarea id="pelajaran" name="pelajaran" 
+                        placeholder="Tuliskan insight dan pemahaman baru yang Anda dapatkan..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="benefitsCR">Manfaat apa yang Anda rasakan dari proses code review?</label>
+                    <textarea id="benefitsCR" name="benefitsCR" 
+                        placeholder="Jelaskan manfaat yang Anda rasakan..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="tantangan">Tantangan yang dihadapi dan solusinya</label>
+                    <textarea id="tantangan" name="tantangan" 
+                        placeholder="Ceritakan kesulitan dan bagaimana Anda mengatasinya..."></textarea>
+                </div>
+            </div>
+
+            <!-- Checklist -->
+            <div class="card">
+                <h2 class="card-title">✅ Checklist Sebelum Submit</h2>
+                
+                <ul class="checklist">
+                    <li>
+                        <input type="checkbox" id="check1">
+                        <label for="check1">Berhasil membuat Pull Request dengan template</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="check2">
+                        <label for="check2">Memberikan review comment ke rekan/diri sendiri</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="check3">
+                        <label for="check3">Mengkonfigurasi branch protection rules</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="check4">
+                        <label for="check4">PR sudah di-merge setelah review</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="check5">
+                        <label for="check5">Semua screenshot lengkap dan jelas</label>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Buttons -->
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary" onclick="generateMarkdown()">
+                    📄 Generate Laporan Markdown
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="saveProgress()">
+                    💾 Simpan Progress
+                </button>
+                <button type="button" class="btn btn-success" onclick="loadProgress()">
+                    📂 Load Progress
+                </button>
+            </div>
+        </form>
+
+        <!-- Output Section -->
+        <div id="outputSection" class="output-section">
+            <div class="card">
+                <h2 class="card-title">📄 Output Laporan (Markdown)</h2>
+                <p class="hint" style="margin-bottom: 1rem;">Copy text di bawah ini dan simpan sebagai file <code>LAPORAN.md</code></p>
+                <textarea id="markdownOutput" readonly></textarea>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary copy-btn" onclick="copyMarkdown()">
+                        📋 Copy to Clipboard
+                    </button>
+                    <button type="button" class="btn btn-success" onclick="downloadMarkdown()">
+                        ⬇️ Download LAPORAN.md
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function previewImage(input, previewId) {
+            const preview = document.getElementById(previewId);
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function generateMarkdown() {
+            const form = document.getElementById('reportForm');
+            const data = new FormData(form);
+            
+            const today = new Date().toLocaleDateString('id-ID', {
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+            });
+
+            let markdown = `# 👀 Laporan Praktikum Pertemuan 04
+## Code Review & Pull Request
+
+---
+
+## 👤 Identitas Mahasiswa
+
+| Item | Keterangan |
+|------|------------|
+| **Nama** | ${data.get('nama') || '-'} |
+| **NIM** | ${data.get('nim') || '-'} |
+| **Kelas** | ${data.get('kelas') || '-'} |
+| **Tanggal** | ${data.get('tanggal') || today} |
+
+---
+
+## 📚 Pemahaman Code Review
+
+### Apa itu Code Review?
+
+${data.get('pengertianCR') || '_Belum diisi_'}
+
+### Best Practices Code Review
+
+${data.get('bestPracticesCR') || '_Belum diisi_'}
+
+### Hal yang Diperhatikan Saat Review
+
+${data.get('whatToReview') || '_Belum diisi_'}
+
+---
+
+## 📬 Pull Request
+
+### URL Pull Request
+
+🔗 ${data.get('prUrl') || '_Belum diisi_'}
+
+### Judul PR
+
+**${data.get('prTitle') || '_Belum diisi_'}**
+
+### Deskripsi PR
+
+\`\`\`markdown
+${data.get('prDescription') || 'Belum diisi'}
+\`\`\`
+
+### Labels
+
+${data.get('prLabels') || '_Tidak ada labels_'}
+
+---
+
+## 🛡️ Branch Protection Rules
+
+### Konfigurasi
+
+${data.get('branchProtectionConfig') || '_Belum diisi_'}
+
+### Pentingnya Branch Protection
+
+${data.get('whyProtection') || '_Belum diisi_'}
+
+---
+
+## 👥 Pengalaman Review
+
+### Review yang Diberikan
+
+${data.get('reviewGiven') || '_Belum diisi_'}
+
+### Feedback yang Diterima
+
+${data.get('reviewReceived') || '_Tidak ada feedback_'}
+
+### Perubahan Setelah Feedback
+
+${data.get('reviewImprovement') || '_Tidak ada perubahan_'}
+
+---
+
+## 📸 Screenshots
+
+| No | Screenshot | Keterangan |
+|----|------------|------------|
+| 1 | ![PR Form](screenshots/01-pr-form.png) | Form pembuatan PR |
+| 2 | ![PR Conversation](screenshots/02-pr-conversation.png) | Diskusi di PR |
+| 3 | ![Review Comment](screenshots/03-review-comment.png) | Review comment pada code |
+| 4 | ![Branch Protection](screenshots/04-branch-protection.png) | Branch protection settings |
+| 5 | ![PR Merged](screenshots/05-pr-merged.png) | PR yang sudah merged |
+
+---
+
+## 💭 Refleksi & Kesimpulan
+
+### Yang Dipelajari
+
+${data.get('pelajaran') || '_Belum diisi_'}
+
+### Manfaat Code Review
+
+${data.get('benefitsCR') || '_Belum diisi_'}
+
+### Tantangan dan Solusi
+
+${data.get('tantangan') || '_Tidak ada tantangan khusus_'}
+
+---
+
+## ✅ Checklist
+
+- [${document.getElementById('check1').checked ? 'x' : ' '}] Berhasil membuat Pull Request dengan template
+- [${document.getElementById('check2').checked ? 'x' : ' '}] Memberikan review comment ke rekan/diri sendiri
+- [${document.getElementById('check3').checked ? 'x' : ' '}] Mengkonfigurasi branch protection rules
+- [${document.getElementById('check4').checked ? 'x' : ' '}] PR sudah di-merge setelah review
+- [${document.getElementById('check5').checked ? 'x' : ' '}] Semua screenshot lengkap dan jelas
+
+---
+
+*Laporan ini dibuat pada ${today}*
+`;
+
+            document.getElementById('markdownOutput').value = markdown;
+            document.getElementById('outputSection').classList.add('visible');
+            document.getElementById('outputSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function copyMarkdown() {
+            const output = document.getElementById('markdownOutput');
+            output.select();
+            document.execCommand('copy');
+            
+            const btn = document.querySelector('.copy-btn');
+            btn.classList.add('copied');
+            setTimeout(() => btn.classList.remove('copied'), 2000);
+        }
+
+        function downloadMarkdown() {
+            const content = document.getElementById('markdownOutput').value;
+            const nim = document.getElementById('nim').value || 'NIM';
+            const nama = document.getElementById('nama').value || 'Nama';
+            const filename = `${nim}_${nama.replace(/\s+/g, '_')}_Pertemuan04_LAPORAN.md`;
+            
+            const blob = new Blob([content], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function saveProgress() {
+            const form = document.getElementById('reportForm');
+            const data = new FormData(form);
+            const obj = {};
+            data.forEach((value, key) => obj[key] = value);
+            
+            for (let i = 1; i <= 5; i++) {
+                obj[`check${i}`] = document.getElementById(`check${i}`).checked;
+            }
+            
+            localStorage.setItem('laporan_pertemuan04', JSON.stringify(obj));
+            alert('✅ Progress berhasil disimpan!');
+        }
+
+        function loadProgress() {
+            const saved = localStorage.getItem('laporan_pertemuan04');
+            if (saved) {
+                const obj = JSON.parse(saved);
+                Object.keys(obj).forEach(key => {
+                    const el = document.getElementById(key);
+                    if (el) {
+                        if (el.type === 'checkbox') {
+                            el.checked = obj[key];
+                        } else {
+                            el.value = obj[key];
+                        }
+                    }
+                });
+                alert('✅ Progress berhasil dimuat!');
+            } else {
+                alert('⚠️ Tidak ada progress yang tersimpan.');
+            }
+        }
+
+        window.onload = function() {
+            const saved = localStorage.getItem('laporan_pertemuan04');
+            if (saved) {
+                if (confirm('Ditemukan progress yang tersimpan. Muat progress?')) {
+                    loadProgress();
+                }
+            }
+            document.getElementById('tanggal').valueAsDate = new Date();
+        };
+    </script>
+</body>
+</html>

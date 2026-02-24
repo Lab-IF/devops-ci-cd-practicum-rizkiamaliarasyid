@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Praktikum - Pertemuan 01: DevOps Culture & Principles</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --border: #e2e8f0;
+            --text: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border-radius: 16px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            opacity: 0.9;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid var(--border);
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .required::after {
+            content: " *";
+            color: var(--danger);
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="date"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .hint {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .screenshot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .screenshot-item {
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .screenshot-item:hover {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        .screenshot-item input[type="file"] {
+            display: none;
+        }
+
+        .screenshot-item label {
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .screenshot-item .icon {
+            font-size: 2rem;
+        }
+
+        .screenshot-item .name {
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .screenshot-item .desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .screenshot-preview {
+            max-width: 100%;
+            max-height: 150px;
+            border-radius: 4px;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .checklist {
+            list-style: none;
+        }
+
+        .checklist li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .checklist input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        .output-section {
+            display: none;
+            margin-top: 2rem;
+        }
+
+        .output-section.visible {
+            display: block;
+        }
+
+        #markdownOutput {
+            width: 100%;
+            min-height: 400px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background: #1e293b;
+            color: #e2e8f0;
+        }
+
+        .copy-btn {
+            position: relative;
+        }
+
+        .copy-btn.copied::after {
+            content: "Copied!";
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--success);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 1rem;
+            }
+
+            .header {
+                padding: 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 1.4rem;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 Laporan Praktikum</h1>
+            <p>Pertemuan 01: DevOps Culture & Principles</p>
+            <span class="badge">⭐ Tingkat: Pemula</span>
+        </div>
+
+        <form id="reportForm">
+            <!-- Identitas Mahasiswa -->
+            <div class="card">
+                <h2 class="card-title">👤 Identitas Mahasiswa</h2>
+                
+                <div class="form-group">
+                    <label class="required" for="nama">Nama Lengkap</label>
+                    <input type="text" id="nama" name="nama" placeholder="Masukkan nama lengkap" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="required" for="nim">NIM</label>
+                    <input type="text" id="nim" name="nim" placeholder="Contoh: 105841111121" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="required" for="kelas">Kelas</label>
+                    <select id="kelas" name="kelas" required>
+                        <option value="">-- Pilih Kelas --</option>
+                        <option value="5A">5A</option>
+                        <option value="5B">5B</option>
+                        <option value="5C">5C</option>
+                        <option value="5D">5D</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="tanggal">Tanggal Pengerjaan</label>
+                    <input type="date" id="tanggal" name="tanggal">
+                </div>
+            </div>
+
+            <!-- Pemahaman DevOps -->
+            <div class="card">
+                <h2 class="card-title">📚 Pemahaman DevOps</h2>
+                
+                <div class="form-group">
+                    <label class="required" for="pengertianDevops">Apa itu DevOps? (Jelaskan dengan bahasa Anda sendiri)</label>
+                    <textarea id="pengertianDevops" name="pengertianDevops" 
+                        placeholder="Jelaskan pemahaman Anda tentang DevOps minimal 200 kata..." required></textarea>
+                    <p class="hint">Minimal 200 kata. Jelaskan konsep, tujuan, dan manfaat DevOps.</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="required" for="pentingnyaDevops">Mengapa DevOps penting dalam industri software saat ini?</label>
+                    <textarea id="pentingnyaDevops" name="pentingnyaDevops" 
+                        placeholder="Jelaskan pentingnya DevOps dalam pengembangan software modern..." required></textarea>
+                    <p class="hint">Berikan alasan dan contoh konkret.</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="contohPerusahaan">Contoh perusahaan yang sukses menerapkan DevOps</label>
+                    <textarea id="contohPerusahaan" name="contohPerusahaan" 
+                        placeholder="Sebutkan minimal 2 perusahaan dan jelaskan bagaimana mereka menerapkan DevOps..."></textarea>
+                </div>
+            </div>
+
+            <!-- Prinsip CALMS -->
+            <div class="card">
+                <h2 class="card-title">🎯 Pemahaman Prinsip CALMS</h2>
+                
+                <div class="form-group">
+                    <label class="required" for="calmsExplanation">Jelaskan kelima prinsip CALMS dan berikan contoh penerapannya</label>
+                    <textarea id="calmsExplanation" name="calmsExplanation" 
+                        placeholder="C - Culture: ...
+A - Automation: ...
+L - Lean: ...
+M - Measurement: ...
+S - Sharing: ..." required></textarea>
+                    <p class="hint">Jelaskan masing-masing prinsip dengan contoh nyata.</p>
+                </div>
+            </div>
+
+            <!-- Setup Environment -->
+            <div class="card">
+                <h2 class="card-title">🔧 Setup Development Environment</h2>
+                
+                <div class="form-group">
+                    <label class="required" for="gitVersion">Versi Git yang terinstall</label>
+                    <input type="text" id="gitVersion" name="gitVersion" placeholder="Contoh: git version 2.43.0" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="required" for="dockerVersion">Versi Docker yang terinstall</label>
+                    <input type="text" id="dockerVersion" name="dockerVersion" placeholder="Contoh: Docker version 24.0.7" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="gitConfig">Konfigurasi Git (user.name dan user.email)</label>
+                    <textarea id="gitConfig" name="gitConfig" 
+                        placeholder="user.name=Nama Anda
+user.email=email@student.unismuh.ac.id"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="vscodeExtensions">Daftar VS Code Extensions yang diinstall</label>
+                    <textarea id="vscodeExtensions" name="vscodeExtensions" 
+                        placeholder="1. Docker
+2. GitLens
+3. YAML
+4. Remote - Containers"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="githubUsername">Username GitHub</label>
+                    <input type="text" id="githubUsername" name="githubUsername" placeholder="Contoh: johndoe">
+                </div>
+            </div>
+
+            <!-- Screenshots -->
+            <div class="card">
+                <h2 class="card-title">📸 Screenshots Bukti</h2>
+                <p class="hint" style="margin-bottom: 1rem;">Upload screenshot sebagai bukti pengerjaan. File akan disimpan di folder <code>screenshots/</code></p>
+                
+                <div class="screenshot-grid">
+                    <div class="screenshot-item">
+                        <label for="ss1">
+                            <span class="icon">📷</span>
+                            <span class="name">01-git-version.png</span>
+                            <span class="desc">Output git --version</span>
+                            <input type="file" id="ss1" accept="image/*" onchange="previewImage(this, 'preview1')">
+                            <img id="preview1" class="screenshot-preview" alt="Preview">
+                        </label>
+                    </div>
+
+                    <div class="screenshot-item">
+                        <label for="ss2">
+                            <span class="icon">📷</span>
+                            <span class="name">02-git-config.png</span>
+                            <span class="desc">Output git config --list</span>
+                            <input type="file" id="ss2" accept="image/*" onchange="previewImage(this, 'preview2')">
+                            <img id="preview2" class="screenshot-preview" alt="Preview">
+                        </label>
+                    </div>
+
+                    <div class="screenshot-item">
+                        <label for="ss3">
+                            <span class="icon">📷</span>
+                            <span class="name">03-docker-version.png</span>
+                            <span class="desc">Output docker --version</span>
+                            <input type="file" id="ss3" accept="image/*" onchange="previewImage(this, 'preview3')">
+                            <img id="preview3" class="screenshot-preview" alt="Preview">
+                        </label>
+                    </div>
+
+                    <div class="screenshot-item">
+                        <label for="ss4">
+                            <span class="icon">📷</span>
+                            <span class="name">04-docker-hello-world.png</span>
+                            <span class="desc">Output docker run hello-world</span>
+                            <input type="file" id="ss4" accept="image/*" onchange="previewImage(this, 'preview4')">
+                            <img id="preview4" class="screenshot-preview" alt="Preview">
+                        </label>
+                    </div>
+
+                    <div class="screenshot-item">
+                        <label for="ss5">
+                            <span class="icon">📷</span>
+                            <span class="name">05-vscode-extensions.png</span>
+                            <span class="desc">VS Code dengan extensions</span>
+                            <input type="file" id="ss5" accept="image/*" onchange="previewImage(this, 'preview5')">
+                            <img id="preview5" class="screenshot-preview" alt="Preview">
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Refleksi -->
+            <div class="card">
+                <h2 class="card-title">💭 Refleksi Pribadi</h2>
+                
+                <div class="form-group">
+                    <label class="required" for="harapan">Apa harapan Anda dari praktikum DevOps ini?</label>
+                    <textarea id="harapan" name="harapan" 
+                        placeholder="Tuliskan harapan dan ekspektasi Anda..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="required" for="skillTarget">Skill apa yang ingin Anda kuasai di akhir semester?</label>
+                    <textarea id="skillTarget" name="skillTarget" 
+                        placeholder="Sebutkan skill-skill yang ingin Anda pelajari..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="tantangan">Tantangan apa yang Anda hadapi saat mengerjakan praktikum ini?</label>
+                    <textarea id="tantangan" name="tantangan" 
+                        placeholder="Ceritakan kesulitan yang Anda hadapi dan bagaimana mengatasinya..."></textarea>
+                </div>
+            </div>
+
+            <!-- Checklist -->
+            <div class="card">
+                <h2 class="card-title">✅ Checklist Sebelum Submit</h2>
+                
+                <ul class="checklist">
+                    <li>
+                        <input type="checkbox" id="check1">
+                        <label for="check1">Git terinstall dan terkonfigurasi dengan benar</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="check2">
+                        <label for="check2">Docker dapat menjalankan container hello-world</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="check3">
+                        <label for="check3">VS Code terinstall dengan semua extensions yang diminta</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="check4">
+                        <label for="check4">Laporan ditulis dengan bahasa yang baik dan benar</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="check5">
+                        <label for="check5">Semua screenshot jelas dan terbaca</label>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Buttons -->
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary" onclick="generateMarkdown()">
+                    📄 Generate Laporan Markdown
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="saveProgress()">
+                    💾 Simpan Progress
+                </button>
+                <button type="button" class="btn btn-success" onclick="loadProgress()">
+                    📂 Load Progress
+                </button>
+            </div>
+        </form>
+
+        <!-- Output Section -->
+        <div id="outputSection" class="output-section">
+            <div class="card">
+                <h2 class="card-title">📄 Output Laporan (Markdown)</h2>
+                <p class="hint" style="margin-bottom: 1rem;">Copy text di bawah ini dan simpan sebagai file <code>LAPORAN.md</code></p>
+                <textarea id="markdownOutput" readonly></textarea>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary copy-btn" onclick="copyMarkdown()">
+                        📋 Copy to Clipboard
+                    </button>
+                    <button type="button" class="btn btn-success" onclick="downloadMarkdown()">
+                        ⬇️ Download LAPORAN.md
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Preview image
+        function previewImage(input, previewId) {
+            const preview = document.getElementById(previewId);
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Generate Markdown
+        function generateMarkdown() {
+            const form = document.getElementById('reportForm');
+            const data = new FormData(form);
+            
+            const today = new Date().toLocaleDateString('id-ID', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            let markdown = `# 📋 Laporan Praktikum Pertemuan 01
+## DevOps Culture & Principles
+
+---
+
+## 👤 Identitas Mahasiswa
+
+| Item | Keterangan |
+|------|------------|
+| **Nama** | ${data.get('nama') || '-'} |
+| **NIM** | ${data.get('nim') || '-'} |
+| **Kelas** | ${data.get('kelas') || '-'} |
+| **Tanggal** | ${data.get('tanggal') || today} |
+
+---
+
+## 📚 Pemahaman DevOps
+
+### Apa itu DevOps?
+
+${data.get('pengertianDevops') || '_Belum diisi_'}
+
+### Mengapa DevOps Penting?
+
+${data.get('pentingnyaDevops') || '_Belum diisi_'}
+
+### Contoh Perusahaan yang Menerapkan DevOps
+
+${data.get('contohPerusahaan') || '_Belum diisi_'}
+
+---
+
+## 🎯 Pemahaman Prinsip CALMS
+
+${data.get('calmsExplanation') || '_Belum diisi_'}
+
+---
+
+## 🔧 Setup Development Environment
+
+### Versi Software
+
+| Software | Versi |
+|----------|-------|
+| Git | ${data.get('gitVersion') || '-'} |
+| Docker | ${data.get('dockerVersion') || '-'} |
+
+### Konfigurasi Git
+
+\`\`\`
+${data.get('gitConfig') || 'Belum dikonfigurasi'}
+\`\`\`
+
+### VS Code Extensions
+
+${data.get('vscodeExtensions') || '_Belum diisi_'}
+
+### GitHub Account
+
+- Username: ${data.get('githubUsername') || '-'}
+
+---
+
+## 📸 Screenshots
+
+| No | Screenshot | Keterangan |
+|----|------------|------------|
+| 1 | ![Git Version](screenshots/01-git-version.png) | Output git --version |
+| 2 | ![Git Config](screenshots/02-git-config.png) | Output git config --list |
+| 3 | ![Docker Version](screenshots/03-docker-version.png) | Output docker --version |
+| 4 | ![Docker Hello World](screenshots/04-docker-hello-world.png) | Output docker run hello-world |
+| 5 | ![VS Code](screenshots/05-vscode-extensions.png) | VS Code dengan extensions |
+
+---
+
+## 💭 Refleksi Pribadi
+
+### Harapan dari Praktikum Ini
+
+${data.get('harapan') || '_Belum diisi_'}
+
+### Skill yang Ingin Dikuasai
+
+${data.get('skillTarget') || '_Belum diisi_'}
+
+### Tantangan yang Dihadapi
+
+${data.get('tantangan') || '_Tidak ada tantangan khusus_'}
+
+---
+
+## ✅ Checklist
+
+- [${document.getElementById('check1').checked ? 'x' : ' '}] Git terinstall dan terkonfigurasi dengan benar
+- [${document.getElementById('check2').checked ? 'x' : ' '}] Docker dapat menjalankan container hello-world
+- [${document.getElementById('check3').checked ? 'x' : ' '}] VS Code terinstall dengan semua extensions yang diminta
+- [${document.getElementById('check4').checked ? 'x' : ' '}] Laporan ditulis dengan bahasa yang baik dan benar
+- [${document.getElementById('check5').checked ? 'x' : ' '}] Semua screenshot jelas dan terbaca
+
+---
+
+*Laporan ini dibuat pada ${today}*
+`;
+
+            document.getElementById('markdownOutput').value = markdown;
+            document.getElementById('outputSection').classList.add('visible');
+            document.getElementById('outputSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Copy to clipboard
+        function copyMarkdown() {
+            const output = document.getElementById('markdownOutput');
+            output.select();
+            document.execCommand('copy');
+            
+            const btn = document.querySelector('.copy-btn');
+            btn.classList.add('copied');
+            setTimeout(() => btn.classList.remove('copied'), 2000);
+        }
+
+        // Download markdown file
+        function downloadMarkdown() {
+            const content = document.getElementById('markdownOutput').value;
+            const nim = document.getElementById('nim').value || 'NIM';
+            const nama = document.getElementById('nama').value || 'Nama';
+            const filename = `${nim}_${nama.replace(/\s+/g, '_')}_Pertemuan01_LAPORAN.md`;
+            
+            const blob = new Blob([content], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Save progress to localStorage
+        function saveProgress() {
+            const form = document.getElementById('reportForm');
+            const data = new FormData(form);
+            const obj = {};
+            data.forEach((value, key) => obj[key] = value);
+            
+            // Save checkboxes
+            for (let i = 1; i <= 5; i++) {
+                obj[`check${i}`] = document.getElementById(`check${i}`).checked;
+            }
+            
+            localStorage.setItem('laporan_pertemuan01', JSON.stringify(obj));
+            alert('✅ Progress berhasil disimpan!');
+        }
+
+        // Load progress from localStorage
+        function loadProgress() {
+            const saved = localStorage.getItem('laporan_pertemuan01');
+            if (saved) {
+                const obj = JSON.parse(saved);
+                Object.keys(obj).forEach(key => {
+                    const el = document.getElementById(key);
+                    if (el) {
+                        if (el.type === 'checkbox') {
+                            el.checked = obj[key];
+                        } else {
+                            el.value = obj[key];
+                        }
+                    }
+                });
+                alert('✅ Progress berhasil dimuat!');
+            } else {
+                alert('⚠️ Tidak ada progress yang tersimpan.');
+            }
+        }
+
+        // Auto-load on page load
+        window.onload = function() {
+            const saved = localStorage.getItem('laporan_pertemuan01');
+            if (saved) {
+                if (confirm('Ditemukan progress yang tersimpan. Muat progress?')) {
+                    loadProgress();
+                }
+            }
+            
+            // Set default date
+            document.getElementById('tanggal').valueAsDate = new Date();
+        };
+    </script>
+</body>
+</html>

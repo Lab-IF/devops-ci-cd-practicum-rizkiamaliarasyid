@@ -103,41 +103,76 @@ Mata kuliah ini mengajarkan mahasiswa untuk membangun **alur kerja otomatis** un
 
 ## 📚 Roadmap Pembelajaran
 
-> **8 Pertemuan** dengan pendekatan *hands-on DevOps practices*
+> **8 Pertemuan** dengan pendekatan *hands-on DevOps practices* — **Disusun secara bertahap untuk pemula**
 
 <div align="center">
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                    DEVOPS LEARNING PATH                         │
+│                  (Revised Curriculum 2026)                      │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│   🎭 DevOps     🔀 Git         🔍 Code        🔧 Jenkins        │
-│   Culture  ──▶  Workflows ──▶  Review   ──▶  Setup            │
-│                                                                 │
-│       │                                                         │
-│       ▼                                                         │
-│                                                                 │
-│   🧪 CI         📦 CD          🦊 GitLab     🏆 UTS             │
-│   Pipeline ──▶  Pipeline ──▶  CI/CD    ──▶  Project           │
+│  FOUNDATION (Week 1-4)              CI/CD (Week 5-8)            │
+│  ┌─────────────────────┐           ┌─────────────────────┐     │
+│  │ 🎭 DevOps Culture   │           │ 🔧 Jenkins Setup    │     │
+│  │     (Week 1)        │           │     (Week 5)        │     │
+│  └─────────┬───────────┘           └─────────┬───────────┘     │
+│            ▼                                  ▼                  │
+│  ┌─────────────────────┐           ┌─────────────────────┐     │
+│  │ 🐳 Docker           │           │ 🧪 CI + Testing     │     │
+│  │    Fundamentals     │           │     (Week 6)        │     │
+│  │     (Week 2)        │           └─────────┬───────────┘     │
+│  └─────────┬───────────┘                     ▼                  │
+│            ▼                       ┌─────────────────────┐     │
+│  ┌─────────────────────┐           │ 📦 CD Pipeline      │     │
+│  │ 🔀 Git Advanced     │           │     (Week 7)        │     │
+│  │     (Week 3)        │           └─────────┬───────────┘     │
+│  └─────────┬───────────┘                     ▼                  │
+│            ▼                       ┌─────────────────────┐     │
+│  ┌─────────────────────┐           │ 🏆 UTS Project      │     │
+│  │ 🔍 Code Review & PR │           │     (Week 8)        │     │
+│  │     (Week 4)        │           └─────────────────────┘     │
+│  └─────────────────────┘                                        │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
 </div>
 
-### 📅 Jadwal Pertemuan
+### 📅 Jadwal Pertemuan (Kurikulum Revisi)
 
-| Pertemuan | Topik | Deliverables | Status |
-|:---------:|-------|--------------|:------:|
-| **01** | [DevOps Culture & Principles](./pertemuan-01/) | Setup development environment | 🟢 |
-| **02** | [Git Advanced: Branching Strategies](./pertemuan-02/) | Implement GitFlow workflow | 🟢 |
-| **03** | [Code Review & Pull Request Best Practices](./pertemuan-03/) | Collaborative coding exercise | 🟢 |
-| **04** | [Introduction to CI/CD: Jenkins Setup](./pertemuan-04/) | Install dan configure Jenkins | 🟢 |
-| **05** | [Building CI Pipeline: Automated Testing](./pertemuan-05/) | Unit & integration tests automation | 🟢 |
-| **06** | [Continuous Delivery Pipeline](./pertemuan-06/) | Automated deployment to staging | 🟢 |
-| **07** | [GitLab CI/CD](./pertemuan-07/) | Build pipeline dengan GitLab CI | 🟢 |
-| **08** | [**UTS: Complete CI/CD Pipeline**](./pertemuan-08/) | End-to-end pipeline project | 🎯 |
+| Pertemuan | Topik | Deskripsi | Tingkat |
+|:---------:|-------|-----------|:-------:|
+| **01** | [🎭 DevOps Culture & Principles](./pertemuan-01/) | Filosofi DevOps, CALMS, setup environment | ⭐ |
+| **02** | [🐳 Docker Fundamentals](./pertemuan-02/) | Container, images, Dockerfile, Docker Compose | ⭐⭐ |
+| **03** | [🔀 Git Advanced: Branching](./pertemuan-03/) | GitFlow, GitHub Flow, merge conflicts | ⭐⭐ |
+| **04** | [🔍 Code Review & Pull Request](./pertemuan-04/) | PR best practices, code review, collaboration | ⭐⭐ |
+| **05** | [🔧 Introduction to CI/CD: Jenkins](./pertemuan-05/) | Jenkins setup, first pipeline, Docker integration | ⭐⭐⭐ |
+| **06** | [🧪 CI Pipeline: Automated Testing](./pertemuan-06/) | Unit tests, coverage, test reports | ⭐⭐⭐ |
+| **07** | [📦 CD Pipeline: Multi-Environment](./pertemuan-07/) | Staging, production, approval gates, health checks | ⭐⭐⭐⭐ |
+| **08** | [🏆 **UTS: Complete CI/CD Pipeline**](./pertemuan-08/) | End-to-end project implementation | ⭐⭐⭐⭐ |
+
+### 🎯 Perubahan dari Kurikulum Sebelumnya
+
+| Sebelum | Sesudah | Alasan |
+|---------|---------|--------|
+| Git di Week 2 | Docker di Week 2 | Docker adalah fondasi penting sebelum Jenkins |
+| GitLab CI di Week 7 | CD Pipeline di Week 7 | Fokus pendalaman Jenkins pipeline |
+| Materi terlalu padat | Penjelasan lebih detail | Lebih mudah dipahami mahasiswa semester 5 |
+
+---
+
+## 🎓 Prasyarat Mahasiswa
+
+Sebelum mengikuti praktikum ini, mahasiswa **sebaiknya** sudah:
+
+| Skill | Level | Keterangan |
+|-------|:-----:|------------|
+| Git dasar | ✅ Wajib | `git add`, `commit`, `push`, `pull` |
+| Command Line | ✅ Wajib | Navigasi direktori, file operations |
+| Programming | ✅ Wajib | Minimal 1 bahasa (Python/JS/Go) |
+| Networking dasar | 📘 Disarankan | Ports, localhost, HTTP |
 
 ---
 
@@ -288,15 +323,105 @@ docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 📁 devops-cicd-practicum/
 ├── 📄 README.md
 ├── 📄 .gitignore
-├── 📁 pertemuan-01/    # DevOps Culture & Principles
-├── 📁 pertemuan-02/    # Git Advanced: Branching
-├── 📁 pertemuan-03/    # Code Review & PR
-├── 📁 pertemuan-04/    # Jenkins Setup
-├── 📁 pertemuan-05/    # CI Pipeline: Testing
-├── 📁 pertemuan-06/    # CD Pipeline
-├── 📁 pertemuan-07/    # GitLab CI/CD
-└── 📁 pertemuan-08/    # UTS Project
+├── 📁 pertemuan-01/           # 🎭 DevOps Culture & Principles
+│   ├── 📄 README.md
+│   ├── 📄 laporan-template.html
+│   └── 📁 screenshots/
+├── 📁 pertemuan-02/           # 🐳 Docker Fundamentals
+│   ├── 📄 README.md
+│   ├── 📄 laporan-template.html
+│   └── 📁 screenshots/
+├── 📁 pertemuan-03/           # 🔀 Git Advanced: Branching
+│   ├── 📄 README.md
+│   ├── 📄 laporan-template.html
+│   └── 📁 screenshots/
+├── 📁 pertemuan-04/           # 🔍 Code Review & PR
+│   ├── 📄 README.md
+│   ├── 📄 laporan-template.html
+│   └── 📁 screenshots/
+├── 📁 pertemuan-05/           # 🔧 Jenkins Setup
+│   ├── 📄 README.md
+│   ├── 📄 laporan-template.html
+│   └── 📁 screenshots/
+├── 📁 pertemuan-06/           # 🧪 CI Pipeline: Testing
+│   ├── 📄 README.md
+│   ├── 📄 laporan-template.html
+│   └── 📁 screenshots/
+├── 📁 pertemuan-07/           # 📦 CD Pipeline: Multi-Environment
+│   ├── 📄 README.md
+│   ├── 📄 laporan-template.html
+│   └── 📁 screenshots/
+└── 📁 pertemuan-08/           # 🏆 UTS Project
+    ├── 📄 README.md
+    ├── 📄 laporan-template.html
+    └── 📁 screenshots/
 ```
+
+Setiap folder pertemuan berisi:
+```
+📁 pertemuan-XX/
+├── 📄 README.md              # Panduan praktikum
+├── 📄 laporan-template.html  # Template laporan (form)
+└── 📁 screenshots/           # Folder screenshot tugas
+    └── 📄 .gitkeep
+```
+
+---
+
+## 📝 Panduan Laporan Praktikum
+
+### Cara Menggunakan Template Laporan
+
+1. **Buka file `laporan-template.html`** di browser (Chrome/Firefox/Edge)
+2. **Isi informasi mahasiswa:**
+   - NIM
+   - Nama Lengkap
+   - Kelas
+3. **Lengkapi setiap tugas** dengan deskripsi langkah-langkah yang dilakukan
+4. **Simpan screenshot** ke folder `screenshots/` dengan format penamaan:
+   ```
+   tugas1-nama-deskripsi.png
+   tugas2-nama-deskripsi.png
+   ```
+5. **Klik tombol "Generate Laporan"** untuk menghasilkan markdown
+6. **Copy** hasil markdown dan **simpan** sebagai `laporan.md` di folder pertemuan
+
+### Struktur Folder Screenshot
+
+```
+📁 pertemuan-XX/screenshots/
+├── 📄 tugas1-docker-build.png
+├── 📄 tugas1-docker-run.png
+├── 📄 tugas2-jenkins-pipeline.png
+└── 📄 tugas3-test-result.png
+```
+
+### Format Penamaan Screenshot
+
+| Format | Contoh |
+|--------|--------|
+| `tugasX-deskripsi.png` | `tugas1-dockerfile.png` |
+| `tugasX-step-deskripsi.png` | `tugas2-step1-build.png` |
+| `hasil-deskripsi.png` | `hasil-jenkins-success.png` |
+
+### Workflow Pengumpulan Laporan
+
+```mermaid
+graph LR
+    A[📂 Buka HTML] --> B[✍️ Isi Form]
+    B --> C[📸 Ambil Screenshot]
+    C --> D[📥 Simpan ke screenshots/]
+    D --> E[⚡ Generate Markdown]
+    E --> F[💾 Simpan laporan.md]
+    F --> G[🚀 Git Push]
+```
+
+### Checklist Sebelum Submit
+
+- [ ] Semua field di form terisi lengkap
+- [ ] Screenshot tersimpan di folder `screenshots/`
+- [ ] File `laporan.md` sudah di-generate dan disimpan
+- [ ] Semua file sudah di-commit dan push ke repository
 
 ---
 

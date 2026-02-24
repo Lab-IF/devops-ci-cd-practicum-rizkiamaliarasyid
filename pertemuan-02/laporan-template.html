@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Praktikum - Pertemuan 02: Docker Fundamentals</title>
+    <style>
+        :root {
+            --primary: #0ea5e9;
+            --primary-dark: #0284c7;
+            --secondary: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --border: #e2e8f0;
+            --text: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border-radius: 16px;
+        }
+
+        .header h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+        .header p { opacity: 0.9; }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid var(--border);
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group { margin-bottom: 1.25rem; }
+
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .required::after { content: " *"; color: var(--danger); }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="date"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+        }
+
+        textarea { min-height: 120px; resize: vertical; }
+
+        .hint { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem; }
+
+        .code-input {
+            font-family: 'Courier New', monospace;
+            background: #1e293b;
+            color: #e2e8f0;
+        }
+
+        .screenshot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .screenshot-item {
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .screenshot-item:hover {
+            border-color: var(--primary);
+            background: rgba(14, 165, 233, 0.05);
+        }
+
+        .screenshot-item input[type="file"] { display: none; }
+
+        .screenshot-item label {
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .screenshot-item .icon { font-size: 2rem; }
+        .screenshot-item .name { font-weight: 500; color: var(--text); }
+        .screenshot-item .desc { font-size: 0.8rem; color: var(--text-muted); }
+
+        .screenshot-preview {
+            max-width: 100%;
+            max-height: 150px;
+            border-radius: 4px;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .checklist { list-style: none; }
+
+        .checklist li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .checklist input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-success { background: var(--success); color: white; }
+        .btn-secondary { background: var(--secondary); color: white; }
+
+        .btn-group { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem; }
+
+        .output-section { display: none; margin-top: 2rem; }
+        .output-section.visible { display: block; }
+
+        #markdownOutput {
+            width: 100%;
+            min-height: 400px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background: #1e293b;
+            color: #e2e8f0;
+        }
+
+        .copy-btn { position: relative; }
+
+        .copy-btn.copied::after {
+            content: "Copied!";
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--success);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 1rem; }
+            .header { padding: 1.5rem; }
+            .header h1 { font-size: 1.4rem; }
+            .btn-group { flex-direction: column; }
+            .btn { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐳 Laporan Praktikum</h1>
+            <p>Pertemuan 02: Docker Fundamentals</p>
+            <span class="badge">⭐⭐ Tingkat: Dasar-Menengah</span>
+        </div>
+
+        <form id="reportForm">
+            <!-- Identitas Mahasiswa -->
+            <div class="card">
+                <h2 class="card-title">👤 Identitas Mahasiswa</h2>
+                
+                <div class="form-group">
+                    <label class="required" for="nama">Nama Lengkap</label>
+                    <input type="text" id="nama" name="nama" placeholder="Masukkan nama lengkap" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="required" for="nim">NIM</label>
+                    <input type="text" id="nim" name="nim" placeholder="Contoh: 105841111121" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="required" for="kelas">Kelas</label>
+                    <select id="kelas" name="kelas" required>
+                        <option value="">-- Pilih Kelas --</option>
+                        <option value="5A">5A</option>
+                        <option value="5B">5B</option>
+                        <option value="5C">5C</option>
+                        <option value="5D">5D</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="tanggal">Tanggal Pengerjaan</label>
+                    <input type="date" id="tanggal" name="tanggal">
+                </div>
+            </div>
+
+            <!-- Pemahaman Docker -->
+            <div class="card">
+                <h2 class="card-title">📚 Pemahaman Docker</h2>
+                
+                <div class="form-group">
+                    <label class="required" for="pengertianDocker">Apa itu Docker? Jelaskan dengan bahasa Anda sendiri</label>
+                    <textarea id="pengertianDocker" name="pengertianDocker" 
+                        placeholder="Jelaskan pemahaman Anda tentang Docker dan containerization..." required></textarea>
+                    <p class="hint">Jelaskan konsep container, images, dan perbedaannya dengan VM.</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="required" for="komponenDocker">Jelaskan komponen utama Docker (Images, Containers, Registry)</label>
+                    <textarea id="komponenDocker" name="komponenDocker" 
+                        placeholder="1. Docker Images: ...
+2. Docker Containers: ...
+3. Docker Registry: ..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="dockerVsVm">Perbedaan Docker Container dan Virtual Machine</label>
+                    <textarea id="dockerVsVm" name="dockerVsVm" 
+                        placeholder="Jelaskan perbedaan arsitektur dan penggunaan..."></textarea>
+                </div>
+            </div>
+
+            <!-- Praktik Docker -->
+            <div class="card">
+                <h2 class="card-title">🔧 Praktik Docker Commands</h2>
+                
+                <div class="form-group">
+                    <label class="required" for="dockerPsOutput">Output dari 'docker ps -a'</label>
+                    <textarea id="dockerPsOutput" name="dockerPsOutput" class="code-input"
+                        placeholder="CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS   PORTS   NAMES" required></textarea>
+                    <p class="hint">Paste output lengkap dari terminal.</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="required" for="dockerImagesOutput">Output dari 'docker images'</label>
+                    <textarea id="dockerImagesOutput" name="dockerImagesOutput" class="code-input"
+                        placeholder="REPOSITORY   TAG       IMAGE ID   CREATED   SIZE" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="required" for="dockerRunCommand">Command docker run yang digunakan untuk menjalankan Flask app</label>
+                    <textarea id="dockerRunCommand" name="dockerRunCommand" class="code-input"
+                        placeholder="docker run -d -p 5000:5000 --name flask-app flask-hello:v1" required></textarea>
+                </div>
+            </div>
+
+            <!-- Dockerfile -->
+            <div class="card">
+                <h2 class="card-title">📄 Dockerfile</h2>
+                
+                <div class="form-group">
+                    <label class="required" for="dockerfileContent">Isi Dockerfile yang Anda buat</label>
+                    <textarea id="dockerfileContent" name="dockerfileContent" class="code-input" style="min-height: 200px;"
+                        placeholder="FROM python:3.9-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY . .
+EXPOSE 5000
+CMD [&quot;python&quot;, &quot;app.py&quot;]" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="required" for="dockerfileExplanation">Jelaskan setiap baris Dockerfile Anda</label>
+                    <textarea id="dockerfileExplanation" name="dockerfileExplanation" 
+                        placeholder="FROM python:3.9-slim - Menggunakan base image Python 3.9 versi slim...
+WORKDIR /app - Mengatur direktori kerja di dalam container...
+..." required></textarea>
+                </div>
+            </div>
+
+            <!-- Docker Compose -->
+            <div class="card">
+                <h2 class="card-title">🐙 Docker Compose</h2>
+                
+                <div class="form-group">
+                    <label class="required" for="composeContent">Isi docker-compose.yml yang Anda buat</label>
+                    <textarea id="composeContent" name="composeContent" class="code-input" style="min-height: 200px;"
+                        placeholder="version: '3.8'
+services:
+  web:
+    build: .
+    ports:
+      - '5000:5000'
+    volumes:
+      - .:/app
+    environment:
+      - FLASK_ENV=development" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="composeExplanation">Jelaskan struktur docker-compose.yml Anda</label>
+                    <textarea id="composeExplanation" name="composeExplanation" 
+                        placeholder="Jelaskan setiap service dan konfigurasinya..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="composeUpOutput">Output dari 'docker-compose up'</label>
+                    <textarea id="composeUpOutput" name="composeUpOutput" class="code-input"
+                        placeholder="Creating network...
+Building web...
+Creating container..."></textarea>
+                </div>
+            </div>
+
+            <!-- Screenshots -->
+            <div class="card">
+                <h2 class="card-title">📸 Screenshots Bukti</h2>
+                <p class="hint" style="margin-bottom: 1rem;">Upload screenshot sebagai bukti pengerjaan. File akan disimpan di folder <code>screenshots/</code></p>
+                
+                <div class="screenshot-grid">
+                    <div class="screenshot-item">
+                        <label for="ss1">
+                            <span class="icon">📷</span>
+                            <span class="name">01-container-running.png</span>
+                            <span class="desc">Container yang sedang berjalan</span>
+                            <input type="file" id="ss1" accept="image/*" onchange="previewImage(this, 'preview1')">
+                            <img id="preview1" class="screenshot-preview" alt="Preview">
+                        </label>
+                    </div>
+
+                    <div class="screenshot-item">
+                        <label for="ss2">
+                            <span class="icon">📷</span>
+                            <span class="name">02-docker-images.png</span>
+                            <span class="desc">Daftar Docker images</span>
+                            <input type="file" id="ss2" accept="image/*" onchange="previewImage(this, 'preview2')">
+                            <img id="preview2" class="screenshot-preview" alt="Preview">
+                        </label>
+                    </div>
+
+                    <div class="screenshot-item">
+                        <label for="ss3">
+                            <span class="icon">📷</span>
+                            <span class="name">03-dockerfile-content.png</span>
+                            <span class="desc">Isi file Dockerfile</span>
+                            <input type="file" id="ss3" accept="image/*" onchange="previewImage(this, 'preview3')">
+                            <img id="preview3" class="screenshot-preview" alt="Preview">
+                        </label>
+                    </div>
+
+                    <div class="screenshot-item">
+                        <label for="ss4">
+                            <span class="icon">📷</span>
+                            <span class="name">04-docker-build.png</span>
+                            <span class="desc">Proses docker build</span>
+                            <input type="file" id="ss4" accept="image/*" onchange="previewImage(this, 'preview4')">
+                            <img id="preview4" class="screenshot-preview" alt="Preview">
+                        </label>
+                    </div>
+
+                    <div class="screenshot-item">
+                        <label for="ss5">
+                            <span class="icon">📷</span>
+                            <span class="name">05-app-browser.png</span>
+                            <span class="desc">Aplikasi berjalan di browser</span>
+                            <input type="file" id="ss5" accept="image/*" onchange="previewImage(this, 'preview5')">
+                            <img id="preview5" class="screenshot-preview" alt="Preview">
+                        </label>
+                    </div>
+
+                    <div class="screenshot-item">
+                        <label for="ss6">
+                            <span class="icon">📷</span>
+                            <span class="name">06-compose-up.png</span>
+                            <span class="desc">Docker Compose up</span>
+                            <input type="file" id="ss6" accept="image/*" onchange="previewImage(this, 'preview6')">
+                            <img id="preview6" class="screenshot-preview" alt="Preview">
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Refleksi -->
+            <div class="card">
+                <h2 class="card-title">💭 Refleksi & Kesimpulan</h2>
+                
+                <div class="form-group">
+                    <label class="required" for="pelajaranDocker">Apa yang Anda pelajari dari praktikum Docker ini?</label>
+                    <textarea id="pelajaranDocker" name="pelajaranDocker" 
+                        placeholder="Tuliskan insight dan pemahaman baru yang Anda dapatkan..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="manfaatDocker">Bagaimana Docker dapat membantu dalam pengembangan software?</label>
+                    <textarea id="manfaatDocker" name="manfaatDocker" 
+                        placeholder="Jelaskan manfaat Docker dalam workflow development..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="tantangan">Tantangan yang dihadapi dan solusinya</label>
+                    <textarea id="tantangan" name="tantangan" 
+                        placeholder="Ceritakan kesulitan dan bagaimana Anda mengatasinya..."></textarea>
+                </div>
+            </div>
+
+            <!-- Checklist -->
+            <div class="card">
+                <h2 class="card-title">✅ Checklist Sebelum Submit</h2>
+                
+                <ul class="checklist">
+                    <li>
+                        <input type="checkbox" id="check1">
+                        <label for="check1">Berhasil membuat Dockerfile yang valid</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="check2">
+                        <label for="check2">Berhasil build Docker image</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="check3">
+                        <label for="check3">Container berjalan dan aplikasi bisa diakses</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="check4">
+                        <label for="check4">Docker Compose berhasil dijalankan</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="check5">
+                        <label for="check5">Semua screenshot lengkap dan jelas</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="check6">
+                        <label for="check6">Penjelasan ditulis dengan bahasa sendiri</label>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Buttons -->
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary" onclick="generateMarkdown()">
+                    📄 Generate Laporan Markdown
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="saveProgress()">
+                    💾 Simpan Progress
+                </button>
+                <button type="button" class="btn btn-success" onclick="loadProgress()">
+                    📂 Load Progress
+                </button>
+            </div>
+        </form>
+
+        <!-- Output Section -->
+        <div id="outputSection" class="output-section">
+            <div class="card">
+                <h2 class="card-title">📄 Output Laporan (Markdown)</h2>
+                <p class="hint" style="margin-bottom: 1rem;">Copy text di bawah ini dan simpan sebagai file <code>LAPORAN.md</code></p>
+                <textarea id="markdownOutput" readonly></textarea>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary copy-btn" onclick="copyMarkdown()">
+                        📋 Copy to Clipboard
+                    </button>
+                    <button type="button" class="btn btn-success" onclick="downloadMarkdown()">
+                        ⬇️ Download LAPORAN.md
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function previewImage(input, previewId) {
+            const preview = document.getElementById(previewId);
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function generateMarkdown() {
+            const form = document.getElementById('reportForm');
+            const data = new FormData(form);
+            
+            const today = new Date().toLocaleDateString('id-ID', {
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+            });
+
+            let markdown = `# 🐳 Laporan Praktikum Pertemuan 02
+## Docker Fundamentals
+
+---
+
+## 👤 Identitas Mahasiswa
+
+| Item | Keterangan |
+|------|------------|
+| **Nama** | ${data.get('nama') || '-'} |
+| **NIM** | ${data.get('nim') || '-'} |
+| **Kelas** | ${data.get('kelas') || '-'} |
+| **Tanggal** | ${data.get('tanggal') || today} |
+
+---
+
+## 📚 Pemahaman Docker
+
+### Apa itu Docker?
+
+${data.get('pengertianDocker') || '_Belum diisi_'}
+
+### Komponen Utama Docker
+
+${data.get('komponenDocker') || '_Belum diisi_'}
+
+### Perbedaan Docker vs Virtual Machine
+
+${data.get('dockerVsVm') || '_Belum diisi_'}
+
+---
+
+## 🔧 Praktik Docker Commands
+
+### Output docker ps -a
+
+\`\`\`
+${data.get('dockerPsOutput') || 'Belum diisi'}
+\`\`\`
+
+### Output docker images
+
+\`\`\`
+${data.get('dockerImagesOutput') || 'Belum diisi'}
+\`\`\`
+
+### Docker Run Command
+
+\`\`\`bash
+${data.get('dockerRunCommand') || 'Belum diisi'}
+\`\`\`
+
+---
+
+## 📄 Dockerfile
+
+### Isi Dockerfile
+
+\`\`\`dockerfile
+${data.get('dockerfileContent') || 'Belum diisi'}
+\`\`\`
+
+### Penjelasan Dockerfile
+
+${data.get('dockerfileExplanation') || '_Belum diisi_'}
+
+---
+
+## 🐙 Docker Compose
+
+### Isi docker-compose.yml
+
+\`\`\`yaml
+${data.get('composeContent') || 'Belum diisi'}
+\`\`\`
+
+### Penjelasan Docker Compose
+
+${data.get('composeExplanation') || '_Belum diisi_'}
+
+### Output Docker Compose Up
+
+\`\`\`
+${data.get('composeUpOutput') || 'Belum diisi'}
+\`\`\`
+
+---
+
+## 📸 Screenshots
+
+| No | Screenshot | Keterangan |
+|----|------------|------------|
+| 1 | ![Container Running](screenshots/01-container-running.png) | Container yang sedang berjalan |
+| 2 | ![Docker Images](screenshots/02-docker-images.png) | Daftar Docker images |
+| 3 | ![Dockerfile](screenshots/03-dockerfile-content.png) | Isi file Dockerfile |
+| 4 | ![Docker Build](screenshots/04-docker-build.png) | Proses docker build |
+| 5 | ![App Browser](screenshots/05-app-browser.png) | Aplikasi berjalan di browser |
+| 6 | ![Compose Up](screenshots/06-compose-up.png) | Docker Compose up |
+
+---
+
+## 💭 Refleksi & Kesimpulan
+
+### Yang Dipelajari
+
+${data.get('pelajaranDocker') || '_Belum diisi_'}
+
+### Manfaat Docker
+
+${data.get('manfaatDocker') || '_Belum diisi_'}
+
+### Tantangan dan Solusi
+
+${data.get('tantangan') || '_Tidak ada tantangan khusus_'}
+
+---
+
+## ✅ Checklist
+
+- [${document.getElementById('check1').checked ? 'x' : ' '}] Berhasil membuat Dockerfile yang valid
+- [${document.getElementById('check2').checked ? 'x' : ' '}] Berhasil build Docker image
+- [${document.getElementById('check3').checked ? 'x' : ' '}] Container berjalan dan aplikasi bisa diakses
+- [${document.getElementById('check4').checked ? 'x' : ' '}] Docker Compose berhasil dijalankan
+- [${document.getElementById('check5').checked ? 'x' : ' '}] Semua screenshot lengkap dan jelas
+- [${document.getElementById('check6').checked ? 'x' : ' '}] Penjelasan ditulis dengan bahasa sendiri
+
+---
+
+*Laporan ini dibuat pada ${today}*
+`;
+
+            document.getElementById('markdownOutput').value = markdown;
+            document.getElementById('outputSection').classList.add('visible');
+            document.getElementById('outputSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function copyMarkdown() {
+            const output = document.getElementById('markdownOutput');
+            output.select();
+            document.execCommand('copy');
+            
+            const btn = document.querySelector('.copy-btn');
+            btn.classList.add('copied');
+            setTimeout(() => btn.classList.remove('copied'), 2000);
+        }
+
+        function downloadMarkdown() {
+            const content = document.getElementById('markdownOutput').value;
+            const nim = document.getElementById('nim').value || 'NIM';
+            const nama = document.getElementById('nama').value || 'Nama';
+            const filename = `${nim}_${nama.replace(/\s+/g, '_')}_Pertemuan02_LAPORAN.md`;
+            
+            const blob = new Blob([content], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function saveProgress() {
+            const form = document.getElementById('reportForm');
+            const data = new FormData(form);
+            const obj = {};
+            data.forEach((value, key) => obj[key] = value);
+            
+            for (let i = 1; i <= 6; i++) {
+                obj[`check${i}`] = document.getElementById(`check${i}`).checked;
+            }
+            
+            localStorage.setItem('laporan_pertemuan02', JSON.stringify(obj));
+            alert('✅ Progress berhasil disimpan!');
+        }
+
+        function loadProgress() {
+            const saved = localStorage.getItem('laporan_pertemuan02');
+            if (saved) {
+                const obj = JSON.parse(saved);
+                Object.keys(obj).forEach(key => {
+                    const el = document.getElementById(key);
+                    if (el) {
+                        if (el.type === 'checkbox') {
+                            el.checked = obj[key];
+                        } else {
+                            el.value = obj[key];
+                        }
+                    }
+                });
+                alert('✅ Progress berhasil dimuat!');
+            } else {
+                alert('⚠️ Tidak ada progress yang tersimpan.');
+            }
+        }
+
+        window.onload = function() {
+            const saved = localStorage.getItem('laporan_pertemuan02');
+            if (saved) {
+                if (confirm('Ditemukan progress yang tersimpan. Muat progress?')) {
+                    loadProgress();
+                }
+            }
+            document.getElementById('tanggal').valueAsDate = new Date();
+        };
+    </script>
+</body>
+</html>
