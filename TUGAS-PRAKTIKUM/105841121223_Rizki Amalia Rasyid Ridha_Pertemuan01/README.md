@@ -7,9 +7,9 @@
 |------|------------|
 | **Nama** | Rizki Amalia Rasyid Ridha |
 | **NIM** | 105841121223 |
-| **Kelas** | 5B |
+| **Kelas** | 5 B |
 | **Tanggal** | 2026-02-24 |
-| **Kelas / Mata Kuliah:** | 5 RPL B / DEVOPS AND CI/CD PIPELINES |
+| **Mata Kuliah** | DEVOPS AND CI/CD PIPELINES |
 ---
 
 ## 1. Pemahaman DevOps
@@ -49,6 +49,7 @@ Berikut adalah lampiran *screenshot* bukti instalasi *development environment* y
 ![VS Code Extensions](screenshots/05-vscode-extensions2.png)
 ![VS Code Extensions](screenshots/05-vscode-extensions3.png)
 ![VS Code Extensions](screenshots/05-vscode-extensions4.png)
+
 
 
 
