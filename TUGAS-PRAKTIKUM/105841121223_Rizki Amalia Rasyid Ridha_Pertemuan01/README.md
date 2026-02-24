@@ -38,4 +38,8 @@ Berikut adalah lampiran *screenshot* bukti instalasi *development environment* y
 ![Docker Hello World](screenshots/04-docker-hello-world.png)
 
 ### 2.5 VS Code Extensions
-![VS Code Extensions](screenshots/05-vscode-extensions.png)
+
+![VS Code Extensions](screenshots/05-vscode-extensions1.png)
+![VS Code Extensions](screenshots/05-vscode-extensions2.png)
+![VS Code Extensions](screenshots/05-vscode-extensions3.png)
+![VS Code Extensions](screenshots/05-vscode-extensions4.png)
