@@ -1,5 +1,6 @@
 # 🎭 Laporan Praktikum Pertemuan 01
 ## Pengantar DevOps — Filosofi, Budaya, dan Persiapan Lingkungan
+---
 
 ## 👤 Identitas Mahasiswa
 
@@ -49,6 +50,7 @@ Berikut adalah lampiran *screenshot* bukti instalasi *development environment* y
 ![VS Code Extensions](screenshots/05-vscode-extensions2.png)
 ![VS Code Extensions](screenshots/05-vscode-extensions3.png)
 ![VS Code Extensions](screenshots/05-vscode-extensions4.png)
+
 
 
 
