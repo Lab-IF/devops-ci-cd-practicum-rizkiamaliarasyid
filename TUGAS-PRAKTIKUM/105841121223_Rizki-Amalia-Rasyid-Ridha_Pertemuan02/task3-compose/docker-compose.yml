@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  web:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./app:/usr/share/nginx/html:ro
+    depends_on:
+      - api
+    networks:
+      - praktikum-net
+
+  api:
+    image: httpd:alpine
+    ports:
+      - "8081:80"
+    networks:
+      - praktikum-net
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: praktikum
+      POSTGRES_PASSWORD: devops123
+      POSTGRES_DB: praktikum_db
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - praktikum-net
+
+networks:
+  praktikum-net:
+    driver: bridge
+
+volumes:
+  db_data:
